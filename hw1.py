@@ -7,6 +7,7 @@ from pprint import pprint
 # 2. Создание контакта
 # 3. Удаление контакта
 # 4. Изменение контакта
+# 5. Найти контакт
 
 PATH = "phone_book.json"
 
@@ -55,7 +56,7 @@ def add_contact (content):
     if not id_list:
         return 0
     max_id = max(map(int, id_list))
-    id_contact = max_id + 1
+    id_contact = str(max_id + 1)
     
     content [id_contact] = {"name": name, "phone": phone, "comment": comment}
     pprint (content, sort_dicts=False)
@@ -71,7 +72,7 @@ def del_contact (content):
     print('\n')
     pprint(content, sort_dicts=False)
     del_id = "удаляемый контакт"
-    del_id = int(input('Введите номер контакта, который необходимо удалить:'))
+    del_id = input('Введите номер контакта, который необходимо удалить:')
     if del_id in content:
         del content[del_id]
     print('\n')
@@ -89,7 +90,7 @@ def edit_contact(content):
     print('\n')
     pprint(content, sort_dicts=False)
     edit_id = "изменяемый контакт"
-    edit_id = int(input('Введите номер контакта, который необходимо изменить: '))
+    edit_id = input('Введите номер контакта, который необходимо изменить: ')
     if edit_id in content :
         content[edit_id]["name"] = input('Введите новое имя: ')
         content[edit_id]["phone"] = input('Введите новый телефон: ')
@@ -104,6 +105,25 @@ def edit_contact(content):
     return(content)
 
 
+def find_contact(content):
+    """
+    Поиск контакта по ключевому слову
+    """
+    keyword = input('Введите слово для поиска: ').lower()
+    results = {}
+    for contact_id, info in content.items():
+        if (keyword in info["name"].lower() or
+            keyword in info["phone"].lower() or
+            keyword in info["comment"].lower()):
+            results[contact_id] = info
+    if results:
+        print('\nНайденные контакты:')
+        pprint(results, sort_dicts=False)
+    else:
+        print('Контакты не найдены')
+
+
+
 def main():
     '''
     Выводит список возможных действий
@@ -115,6 +135,7 @@ def main():
         print("2. Добавить контакт")
         print("3. Удалить контакт")
         print("4. Редактировать контакт")
+        print("5. Найти контакт")
         print("0. Выйти")
         choice = input("Выберите действие: ")
         if choice == "1":
@@ -125,6 +146,8 @@ def main():
             content = del_contact(content) 
         elif choice == "4":
             content = edit_contact(content)
+        elif choice == "5":
+            find_contact(content)
         elif choice == "0":
             print('Завершение программы')
             break
